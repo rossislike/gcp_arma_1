@@ -8,3 +8,7 @@ variable "vpc_b" {
     type = map(string)
     description = "VPC B"
 }
+
+variable "vpn_secret" {
+    type = string
+}

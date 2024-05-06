@@ -38,7 +38,7 @@ resource "google_compute_forwarding_rule" "fr_udp4500_a" {
 resource "google_compute_vpn_tunnel" "tunnel1" {
   name          = "tunnel1"
   peer_ip       = google_compute_address.vpc_b_static_ip.address
-  shared_secret = "$8taSu5+tra"
+  shared_secret = var.vpn_secret
   local_traffic_selector = [var.vpc_a["cidr"]]
 
   target_vpn_gateway = google_compute_vpn_gateway.target_gateway_a.id
@@ -99,7 +99,7 @@ resource "google_compute_forwarding_rule" "fr_udp4500_b" {
 resource "google_compute_vpn_tunnel" "tunnel2" {
   name = "tunnel2"
   peer_ip = google_compute_address.vpc_a_static_ip.address
-  shared_secret = "$8taSu5+tra"
+  shared_secret = var.vpn_secret
   local_traffic_selector = [var.vpc_b["cidr3"]]
 
   target_vpn_gateway = google_compute_vpn_gateway.target_gateway_b.id
