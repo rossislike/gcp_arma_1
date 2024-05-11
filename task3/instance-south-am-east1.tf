@@ -1,14 +1,11 @@
-# This code is compatible with Terraform 4.25.0 and versions that are backwards compatible to 4.25.0.
-# For information about validating this Terraform code, see https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/google-cloud-platform-build#format-and-validate-the-configuration
-
-resource "google_compute_instance" "info-viewer-instance" {
+resource "google_compute_instance" "south_am_east1_instance" {
   boot_disk {
     auto_delete = true
-    device_name = "info-viewer-instance"
+    device_name = "south-am-east1-instance"
 
     initialize_params {
-      image = "projects/windows-cloud/global/images/windows-server-2022-dc-v20240415"
-      size  = 120
+      image = "projects/debian-cloud/global/images/debian-12-bookworm-v20240415"
+      size  = 10
       type  = "pd-balanced"
     }
 
@@ -23,17 +20,14 @@ resource "google_compute_instance" "info-viewer-instance" {
     goog-ec-src = "vm_add-tf"
   }
 
-  machine_type = "n2-standard-2"
-  name         = "info-viewer-instance"
+  machine_type = "e2-micro"
+  name         = "south-am-east1-instance"
 
   network_interface {
-    access_config {
-      network_tier = "PREMIUM"
-    }
 
     queue_count = 0
     stack_type  = "IPV4_ONLY"
-    subnetwork  = google_compute_subnetwork.subnet_b3.name
+    subnetwork  = google_compute_subnetwork.game_client_south_am_east1_subnet.name
   }
 
   scheduling {
@@ -44,7 +38,7 @@ resource "google_compute_instance" "info-viewer-instance" {
   }
 
   service_account {
-    email  = "821691878231-compute@developer.gserviceaccount.com"
+    email  = "715004262141-compute@developer.gserviceaccount.com"
     scopes = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
   }
 
@@ -54,6 +48,5 @@ resource "google_compute_instance" "info-viewer-instance" {
     enable_vtpm                 = true
   }
 
-  zone = var.vpc_b["zone3"]
-  provider = google.gcp-service-project
+  zone = "southamerica-east1-b"
 }

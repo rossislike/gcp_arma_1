@@ -13,39 +13,41 @@ provider "google" {
   credentials = "${path.module}/../my-second-project-416401-f024ec5b7771.json"
 }
 
-provider "google" { 
-  region = "us-central1"
-  project = "earnest-pact-383500"
-  credentials = "${path.module}/../earnest-pact-383500-43451efef3fd.json"
-  alias = "gcp-service-project"
-}
-resource "google_compute_network" "vpc_a" {
-  name = var.vpc_a["name"]
+# provider "google" { 
+#   region = "us-central1"
+#   project = "earnest-pact-383500"
+#   credentials = "${path.module}/../earnest-pact-383500-43451efef3fd.json"
+#   alias = "gcp-service-project"
+# }
+
+
+resource "google_compute_network" "game_info_vpc" {
+  name = "game-info-vpc"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet_a1" {
   name ="subnet10"
-  network = google_compute_network.vpc_a.id
-  ip_cidr_range = var.vpc_a["cidr"]
+  network = google_compute_network.game_info_vpc.id
+  ip_cidr_range = "10.151.1.0/24"
   region = "europe-central2"
 }
 
-resource "google_compute_firewall" "vpc_a_custom_rule" {
-  network = google_compute_network.vpc_a.name
-  name    = "${var.vpc_a["name"]}-custom"
+resource "google_compute_firewall" "game_info_vpc_custom_rule" {
+  network = google_compute_network.game_info_vpc.name
+  name    = "game-info-vpc-custom"
   priority = 65534
 
-  source_ranges = [var.vpc_a["cidr"]]
+  source_ranges = ["10.151.1.0/24"]
 
   allow {
     protocol = "all"
   }
 }
 
-resource "google_compute_firewall" "vpc_a_ssh_rule" {
-  network = google_compute_network.vpc_a.name
-  name    = "${var.vpc_a["name"]}-ssh"
+resource "google_compute_firewall" "game_info_vpc_ssh_rule" {
+  network = google_compute_network.game_info_vpc.name
+  name    = "game-info-vpc-ssh"
   priority = 65534
 
   source_ranges = ["0.0.0.0/0"]
@@ -56,9 +58,9 @@ resource "google_compute_firewall" "vpc_a_ssh_rule" {
   }
 }
 
-resource "google_compute_firewall" "vpc_a_icmp_rule" {
-  name    = "${var.vpc_a["name"]}-icmp"
-  network = google_compute_network.vpc_a.name
+resource "google_compute_firewall" "game_info_vpc_icmp_rule" {
+  name    = "game-info-vpc-icmp"
+  network = google_compute_network.game_info_vpc.name
 
   allow {
     protocol = "icmp"
@@ -68,66 +70,60 @@ resource "google_compute_firewall" "vpc_a_icmp_rule" {
   priority = 65534
 }
 
-resource "google_compute_firewall" "vpc_a_http_rule" {
-  name    = "${var.vpc_a["name"]}-http"
-  network = google_compute_network.vpc_a.name
+resource "google_compute_firewall" "game_info_vpc_http_rule" {
+  name    = "game-info-vpc-http"
+  network = google_compute_network.game_info_vpc.name
 
   allow {
     protocol = "tcp"
     ports = ["80"]
   }
 
-  source_ranges = [var.vpc_b["cidr1"], var.vpc_b["cidr2"], var.vpc_b["cidr3"]]
+  source_ranges = ["172.16.1.0/24", "172.17.1.0/24", "192.168.1.0/24"]
   priority = 65534
 }
 
-resource "google_compute_network" "vpc_b" {
-  name = var.vpc_b["name"]
+resource "google_compute_network" "game_client_vpc" {
+  name = "game-client-vpc"
   auto_create_subnetworks = false
-  provider = google.gcp-service-project
 }
 
-resource "google_compute_subnetwork" "subnet_b1" {
-  name ="subnet172a"
-  network = google_compute_network.vpc_b.id
-  ip_cidr_range = var.vpc_b["cidr1"]
+resource "google_compute_subnetwork" "game_client_us_cent1_subnet" {
+  name ="us-cent1-subnet"
+  network = google_compute_network.game_client_vpc.id
+  ip_cidr_range = "172.16.1.0/24"
   region = "us-central1"
-  provider = google.gcp-service-project
 }
 
-resource "google_compute_subnetwork" "subnet_b2" {
-  name ="subnet172b"
-  network = google_compute_network.vpc_b.id
-  ip_cidr_range = var.vpc_b["cidr2"]
+resource "google_compute_subnetwork" "game_client_south_am_east1_subnet" {
+  name ="south-am-east1-subnet"
+  network = google_compute_network.game_client_vpc.id
+  ip_cidr_range = "172.17.1.0/24"
   region = "southamerica-east1"
-  provider = google.gcp-service-project
 }
 
-resource "google_compute_subnetwork" "subnet_b3" {
-  name ="subnet192"
-  network = google_compute_network.vpc_b.id
-  ip_cidr_range = var.vpc_b["cidr3"]
+resource "google_compute_subnetwork" "game_client_asia_ne1_subnet" {
+  name ="asia-ne1-subnet"
+  network = google_compute_network.game_client_vpc.id
+  ip_cidr_range = "192.168.1.0/24"
   region = "asia-northeast1"
-  provider = google.gcp-service-project
 }
 
-resource "google_compute_firewall" "vpc_b_custom_rule" {
-  network = google_compute_network.vpc_b.name
-  name    = "${var.vpc_b["name"]}-custom"
+resource "google_compute_firewall" "game_client_vpc_custom_rule" {
+  network = google_compute_network.game_client_vpc.name
+  name    = "game-client-vpc-custom"
   priority = 65534
-  provider = google.gcp-service-project
-  source_ranges = [var.vpc_b["cidr1"], var.vpc_b["cidr2"], var.vpc_b["cidr3"]]
+  source_ranges = ["172.16.1.0/24", "172.17.1.0/24", "192.168.1.0/24"]
 
   allow {
     protocol = "all"
   }
 }
 
-resource "google_compute_firewall" "vpc_b_ssh_rule" {
-  network = google_compute_network.vpc_b.name
-  name    = "${var.vpc_b["name"]}-ssh"
+resource "google_compute_firewall" "game_client_vpc_ssh_rule" {
+  network = google_compute_network.game_client_vpc.name
+  name    = "game-client-vpc-ssh"
   priority = 65534
-  provider = google.gcp-service-project
   source_ranges = ["0.0.0.0/0"]
 
   allow {
@@ -136,10 +132,9 @@ resource "google_compute_firewall" "vpc_b_ssh_rule" {
   }
 }
 
-resource "google_compute_firewall" "vpc_b_icmp_rule" {
-  name    = "${var.vpc_b["name"]}-icmp"
-  network = google_compute_network.vpc_b.name
-  provider = google.gcp-service-project
+resource "google_compute_firewall" "game_client_vpc_icmp_rule" {
+  name    = "game-client-vpc-icmp"
+  network = google_compute_network.game_client_vpc.name
   allow {
     protocol = "icmp"
   }
@@ -148,10 +143,9 @@ resource "google_compute_firewall" "vpc_b_icmp_rule" {
   priority = 65534
 }
 
-resource "google_compute_firewall" "vpc_b_rdp_rule" {
-  name    = "${var.vpc_b["name"]}-rdp"
-  network = google_compute_network.vpc_b.name
-  provider = google.gcp-service-project
+resource "google_compute_firewall" "game_client_vpc_rdp_rule" {
+  name    = "game-client-vpc-rdp"
+  network = google_compute_network.game_client_vpc.name
   allow {
     protocol = "tcp"
     ports = ["3389"]
@@ -174,7 +168,6 @@ resource "google_compute_firewall" "vpc_b_rdp_rule" {
 # }
 
 
-#output "custom" {
+# output "custom" {
 #  value = google_compute_network.custom-vpc-tf.id
-#}
-
+# }

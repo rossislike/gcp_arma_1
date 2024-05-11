@@ -1,10 +1,10 @@
 # This code is compatible with Terraform 4.25.0 and versions that are backwards compatible to 4.25.0.
 # For information about validating this Terraform code, see https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/google-cloud-platform-build#format-and-validate-the-configuration
 
-resource "google_compute_instance" "americas-instance-a" {
+resource "google_compute_instance" "us_central1_instance" {
   boot_disk {
     auto_delete = true
-    device_name = "americas-instance-a"
+    device_name = "us-central1-instance"
 
     initialize_params {
       image = "projects/debian-cloud/global/images/debian-12-bookworm-v20240415"
@@ -24,13 +24,13 @@ resource "google_compute_instance" "americas-instance-a" {
   }
 
   machine_type = "e2-micro"
-  name         = "americas-instance-a"
+  name         = "us-central1-instance"
 
   network_interface {
 
     queue_count = 0
     stack_type  = "IPV4_ONLY"
-    subnetwork  = google_compute_subnetwork.subnet_b1.name
+    subnetwork  = google_compute_subnetwork.game_client_us_cent1_subnet.name
   }
 
   scheduling {
@@ -41,7 +41,7 @@ resource "google_compute_instance" "americas-instance-a" {
   }
 
   service_account {
-    email  = "821691878231-compute@developer.gserviceaccount.com"
+    email  = "715004262141-compute@developer.gserviceaccount.com"
     scopes = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
   }
 
@@ -51,6 +51,6 @@ resource "google_compute_instance" "americas-instance-a" {
     enable_vtpm                 = true
   }
 
-  zone = var.vpc_b["zone1"]
-  provider = google.gcp-service-project
+  zone = "us-central1-a"
+  # provider = google.gcp-service-project
 }
