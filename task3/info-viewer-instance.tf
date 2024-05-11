@@ -44,7 +44,7 @@ resource "google_compute_instance" "info-viewer-instance" {
   }
 
   service_account {
-    email  = "715004262141-compute@developer.gserviceaccount.com"
+    email  = "821691878231-compute@developer.gserviceaccount.com"
     scopes = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
   }
 
@@ -55,4 +55,5 @@ resource "google_compute_instance" "info-viewer-instance" {
   }
 
   zone = var.vpc_b["zone3"]
+  provider = google.gcp-service-project
 }

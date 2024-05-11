@@ -13,6 +13,12 @@ provider "google" {
   credentials = "${path.module}/../my-second-project-416401-f024ec5b7771.json"
 }
 
+provider "google" { 
+  region = "us-central1"
+  project = "earnest-pact-383500"
+  credentials = "${path.module}/../earnest-pact-383500-43451efef3fd.json"
+  alias = "gcp-service-project"
+}
 resource "google_compute_network" "vpc_a" {
   name = var.vpc_a["name"]
   auto_create_subnetworks = false
@@ -78,6 +84,7 @@ resource "google_compute_firewall" "vpc_a_http_rule" {
 resource "google_compute_network" "vpc_b" {
   name = var.vpc_b["name"]
   auto_create_subnetworks = false
+  provider = google.gcp-service-project
 }
 
 resource "google_compute_subnetwork" "subnet_b1" {
@@ -85,6 +92,7 @@ resource "google_compute_subnetwork" "subnet_b1" {
   network = google_compute_network.vpc_b.id
   ip_cidr_range = var.vpc_b["cidr1"]
   region = "us-central1"
+  provider = google.gcp-service-project
 }
 
 resource "google_compute_subnetwork" "subnet_b2" {
@@ -92,6 +100,7 @@ resource "google_compute_subnetwork" "subnet_b2" {
   network = google_compute_network.vpc_b.id
   ip_cidr_range = var.vpc_b["cidr2"]
   region = "southamerica-east1"
+  provider = google.gcp-service-project
 }
 
 resource "google_compute_subnetwork" "subnet_b3" {
@@ -99,13 +108,14 @@ resource "google_compute_subnetwork" "subnet_b3" {
   network = google_compute_network.vpc_b.id
   ip_cidr_range = var.vpc_b["cidr3"]
   region = "asia-northeast1"
+  provider = google.gcp-service-project
 }
 
 resource "google_compute_firewall" "vpc_b_custom_rule" {
   network = google_compute_network.vpc_b.name
   name    = "${var.vpc_b["name"]}-custom"
   priority = 65534
-
+  provider = google.gcp-service-project
   source_ranges = [var.vpc_b["cidr1"], var.vpc_b["cidr2"], var.vpc_b["cidr3"]]
 
   allow {
@@ -117,7 +127,7 @@ resource "google_compute_firewall" "vpc_b_ssh_rule" {
   network = google_compute_network.vpc_b.name
   name    = "${var.vpc_b["name"]}-ssh"
   priority = 65534
-
+  provider = google.gcp-service-project
   source_ranges = ["0.0.0.0/0"]
 
   allow {
@@ -129,7 +139,7 @@ resource "google_compute_firewall" "vpc_b_ssh_rule" {
 resource "google_compute_firewall" "vpc_b_icmp_rule" {
   name    = "${var.vpc_b["name"]}-icmp"
   network = google_compute_network.vpc_b.name
-
+  provider = google.gcp-service-project
   allow {
     protocol = "icmp"
   }
@@ -141,7 +151,7 @@ resource "google_compute_firewall" "vpc_b_icmp_rule" {
 resource "google_compute_firewall" "vpc_b_rdp_rule" {
   name    = "${var.vpc_b["name"]}-rdp"
   network = google_compute_network.vpc_b.name
-
+  provider = google.gcp-service-project
   allow {
     protocol = "tcp"
     ports = ["3389"]
@@ -167,3 +177,4 @@ resource "google_compute_firewall" "vpc_b_rdp_rule" {
 #output "custom" {
 #  value = google_compute_network.custom-vpc-tf.id
 #}
+
