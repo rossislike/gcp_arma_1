@@ -21,20 +21,20 @@ provider "google" {
 # }
 
 
-resource "google_compute_network" "game_info_vpc" {
+resource "google_compute_network" "game_server_vpc" {
   name = "game-info-vpc"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnet_a1" {
   name ="subnet10"
-  network = google_compute_network.game_info_vpc.id
+  network = google_compute_network.game_server_vpc.id
   ip_cidr_range = "10.151.1.0/24"
   region = "europe-central2"
 }
 
-resource "google_compute_firewall" "game_info_vpc_custom_rule" {
-  network = google_compute_network.game_info_vpc.name
+resource "google_compute_firewall" "game_server_vpc_custom_rule" {
+  network = google_compute_network.game_server_vpc.name
   name    = "game-info-vpc-custom"
   priority = 65534
 
@@ -45,8 +45,8 @@ resource "google_compute_firewall" "game_info_vpc_custom_rule" {
   }
 }
 
-resource "google_compute_firewall" "game_info_vpc_ssh_rule" {
-  network = google_compute_network.game_info_vpc.name
+resource "google_compute_firewall" "game_server_vpc_ssh_rule" {
+  network = google_compute_network.game_server_vpc.name
   name    = "game-info-vpc-ssh"
   priority = 65534
 
@@ -58,9 +58,9 @@ resource "google_compute_firewall" "game_info_vpc_ssh_rule" {
   }
 }
 
-resource "google_compute_firewall" "game_info_vpc_icmp_rule" {
+resource "google_compute_firewall" "game_server_vpc_icmp_rule" {
   name    = "game-info-vpc-icmp"
-  network = google_compute_network.game_info_vpc.name
+  network = google_compute_network.game_server_vpc.name
 
   allow {
     protocol = "icmp"
@@ -70,9 +70,9 @@ resource "google_compute_firewall" "game_info_vpc_icmp_rule" {
   priority = 65534
 }
 
-resource "google_compute_firewall" "game_info_vpc_http_rule" {
+resource "google_compute_firewall" "game_server_vpc_http_rule" {
   name    = "game-info-vpc-http"
-  network = google_compute_network.game_info_vpc.name
+  network = google_compute_network.game_server_vpc.name
 
   allow {
     protocol = "tcp"

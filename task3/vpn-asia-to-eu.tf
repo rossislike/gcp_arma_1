@@ -5,7 +5,7 @@ data "google_secret_manager_secret_version" "vpn_secret" {
 
 resource "google_compute_vpn_gateway" "eu_tgw" {
   name    = "eu-tgw"
-  network = google_compute_network.game_info_vpc.id
+  network = google_compute_network.game_server_vpc.id
   region = "europe-central2"
 }
 

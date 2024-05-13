@@ -167,23 +167,16 @@ resource "google_compute_instance" "my_instance" {
 
 
 output "public_ip" {
-  # value = google_compute_network.gvpc.id
   value = "http://${google_compute_instance.my_instance.network_interface[0].access_config[0].nat_ip}"
 }
 
 output "vpc" {
-  # value = google_compute_network.gvpc.id
   value = google_compute_network.gvpc.name
 }
 output "internal_ip" {
-  # value = google_compute_network.gvpc.id
   value = google_compute_instance.my_instance.network_interface[0].network_ip
 }
 
 output "vm_subnet" {
-  # value = google_compute_network.gvpc.id
   value = google_compute_subnetwork.gsubnet.ip_cidr_range
 }
-#output "custom" {
-#  value = google_compute_network.custom-vpc-tf.id
-#}
