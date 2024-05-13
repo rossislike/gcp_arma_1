@@ -1,14 +1,11 @@
-# This code is compatible with Terraform 4.25.0 and versions that are backwards compatible to 4.25.0.
-# For information about validating this Terraform code, see https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/google-cloud-platform-build#format-and-validate-the-configuration
-
-resource "google_compute_instance" "asia_ne_instance" {
+resource "google_compute_instance" "eu_instance" {
   boot_disk {
     auto_delete = true
-    device_name = "asia-ne-instance"
+    device_name = "eu-instance"
 
     initialize_params {
-      image = "projects/windows-cloud/global/images/windows-server-2022-dc-v20240415"
-      size  = 120
+      image = "projects/debian-cloud/global/images/debian-12-bookworm-v20240415"
+      size  = 10
       type  = "pd-balanced"
     }
 
@@ -23,8 +20,13 @@ resource "google_compute_instance" "asia_ne_instance" {
     goog-ec-src = "vm_add-tf"
   }
 
-  machine_type = "n2-standard-2"
-  name         = "asia-ne-instance"
+  machine_type = "e2-micro"
+
+  metadata = {
+    startup-script = file("startup-script.sh")
+  }
+
+  name = "eu-instance"
 
   network_interface {
     access_config {
@@ -33,7 +35,7 @@ resource "google_compute_instance" "asia_ne_instance" {
 
     queue_count = 0
     stack_type  = "IPV4_ONLY"
-    subnetwork  = google_compute_subnetwork.game_client_asia_ne1_subnet.name
+    subnetwork  = google_compute_subnetwork.eu_subnet.name
   }
 
   scheduling {
@@ -54,5 +56,5 @@ resource "google_compute_instance" "asia_ne_instance" {
     enable_vtpm                 = true
   }
 
-  zone = "asia-northeast1-b"
+  zone = "europe-central2-a"
 }
